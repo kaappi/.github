@@ -1,0 +1,103 @@
+name: Ecosystem CI
+
+on:
+  workflow_call:
+    inputs:
+      zig-version:
+        type: string
+        default: '0.16.0'
+        description: 'Zig toolchain version'
+      has-native-build:
+        type: boolean
+        default: false
+        description: 'Run make in the repo root'
+      dependencies:
+        type: string
+        default: ''
+        description: 'Space-separated kaappi-* repos to clone (auto-builds if Makefile present)'
+      test-files:
+        type: string
+        default: ''
+        description: 'Space-separated .scm test files to run'
+      test-expression:
+        type: string
+        default: ''
+        description: 'Inline Scheme expression to evaluate (for smoke tests)'
+      service:
+        type: string
+        default: ''
+        description: 'Service to start: redis or postgresql'
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: ${{ inputs.zig-version }}
+
+      - name: Build Kaappi
+        run: |
+          git clone --depth 1 https://github.com/kaappi/kaappi.git /tmp/kaappi
+          cd /tmp/kaappi && zig build
+
+      - name: Clone and build dependencies
+        if: inputs.dependencies != ''
+        run: |
+          for dep in ${{ inputs.dependencies }}; do
+            git clone --depth 1 "https://github.com/kaappi/${dep}.git" "/tmp/${dep}"
+            if [ -f "/tmp/${dep}/Makefile" ]; then
+              make -C "/tmp/${dep}"
+            fi
+          done
+
+      - name: Build native library
+        if: inputs.has-native-build
+        run: make
+
+      - name: Start service
+        if: inputs.service != ''
+        run: |
+          if [ "${{ inputs.service }}" = "redis" ]; then
+            brew install redis
+            redis-server --daemonize yes
+          elif [ "${{ inputs.service }}" = "postgresql" ]; then
+            brew install postgresql@14
+            brew services start postgresql@14
+            sleep 3
+            /opt/homebrew/opt/postgresql@14/bin/createdb kaappi_test || true
+          fi
+
+      - name: Run tests
+        if: inputs.test-files != '' || inputs.test-expression != ''
+        run: |
+          LIB_FLAGS="--lib-path lib"
+          NATIVE_PATHS=""
+          for dep in ${{ inputs.dependencies }}; do
+            LIB_FLAGS="${LIB_FLAGS} --lib-path /tmp/${dep}/lib"
+            if [ -f "/tmp/${dep}/Makefile" ]; then
+              NATIVE_PATHS="${NATIVE_PATHS:+${NATIVE_PATHS}:}/tmp/${dep}"
+            fi
+          done
+          if [ "${{ inputs.has-native-build }}" = "true" ]; then
+            NATIVE_PATHS="${NATIVE_PATHS:+${NATIVE_PATHS}:}${GITHUB_WORKSPACE}"
+          fi
+          export DYLD_LIBRARY_PATH="${NATIVE_PATHS}"
+          export LD_LIBRARY_PATH="${NATIVE_PATHS}"
+
+          KAAPPI=/tmp/kaappi/zig-out/bin/kaappi
+
+          for test_file in ${{ inputs.test-files }}; do
+            echo "::group::${test_file}"
+            ${KAAPPI} ${LIB_FLAGS} "${test_file}"
+            echo "::endgroup::"
+          done
+
+          if [ -n "${{ inputs.test-expression }}" ]; then
+            echo "::group::smoke test"
+            ${KAAPPI} ${LIB_FLAGS} -e "${{ inputs.test-expression }}"
+            echo "::endgroup::"
+          fi
