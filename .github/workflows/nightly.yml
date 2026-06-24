@@ -67,9 +67,17 @@ jobs:
           KAAPPI=/tmp/kaappi/bin/kaappi
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} --coverage --lib-path repo/lib repo/${f}
+            ${KAAPPI} --coverage --coverage-xml coverage.xml --lib-path repo/lib repo/${f}
             echo "::endgroup::"
           done
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          flags: ${{ matrix.repo }}
+          override_repo: kaappi/${{ matrix.repo }}
+          fail_ci_if_error: false
 
   # ── Native libraries (need make, no services) ──────────────────────
   native-libs:
@@ -103,12 +111,20 @@ jobs:
           KAAPPI=/tmp/kaappi/bin/kaappi
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} --coverage --lib-path repo/lib repo/${f}
+            ${KAAPPI} --coverage --coverage-xml coverage.xml --lib-path repo/lib repo/${f}
             echo "::endgroup::"
           done
         env:
           DYLD_LIBRARY_PATH: ${{ github.workspace }}/repo
           LD_LIBRARY_PATH: ${{ github.workspace }}/repo
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          flags: ${{ matrix.repo }}
+          override_repo: kaappi/${{ matrix.repo }}
+          fail_ci_if_error: false
 
   # ── Libraries with dependencies (need other kaappi-* repos) ────────
   dep-libs:
@@ -173,9 +189,17 @@ jobs:
 
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} --coverage ${LIB_FLAGS} repo/${f}
+            ${KAAPPI} --coverage --coverage-xml coverage.xml ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
           done
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          flags: ${{ matrix.repo }}
+          override_repo: kaappi/${{ matrix.repo }}
+          fail_ci_if_error: false
 
   # ── Libraries with service dependencies ─────────────────────────────
   service-libs:
@@ -259,9 +283,17 @@ jobs:
 
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} --coverage ${LIB_FLAGS} repo/${f}
+            ${KAAPPI} --coverage --coverage-xml coverage.xml ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
           done
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          flags: ${{ matrix.repo }}
+          override_repo: kaappi/${{ matrix.repo }}
+          fail_ci_if_error: false
 
   # ── Summary ─────────────────────────────────────────────────────────
   summary:
