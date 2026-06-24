@@ -5,6 +5,10 @@ on:
     - cron: '17 5 * * *'   # 05:17 UTC daily
   workflow_dispatch:        # manual trigger
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-kaappi:
     runs-on: macos-latest
@@ -74,7 +78,7 @@ jobs:
       - name: Upload to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
           override_repo: kaappi/${{ matrix.repo }}
@@ -122,7 +126,7 @@ jobs:
       - name: Upload to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
           override_repo: kaappi/${{ matrix.repo }}
@@ -198,7 +202,7 @@ jobs:
       - name: Upload to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
           override_repo: kaappi/${{ matrix.repo }}
@@ -293,7 +297,7 @@ jobs:
       - name: Upload to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
           override_repo: kaappi/${{ matrix.repo }}
