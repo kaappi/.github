@@ -1,0 +1,284 @@
+name: Nightly Ecosystem Tests
+
+on:
+  schedule:
+    - cron: '17 5 * * *'   # 05:17 UTC daily
+  workflow_dispatch:        # manual trigger
+
+jobs:
+  build-kaappi:
+    runs-on: macos-latest
+    steps:
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: '0.16.0'
+
+      - name: Build Kaappi from main
+        run: |
+          git clone --depth 1 https://github.com/kaappi/kaappi.git /tmp/kaappi
+          cd /tmp/kaappi && zig build
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaappi-binary
+          path: /tmp/kaappi/zig-out/bin/kaappi
+          retention-days: 1
+
+  # ── Pure Scheme libraries (no native build, no services) ────────────
+  pure-libs:
+    needs: build-kaappi
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: kaappi-cli
+            test-files: tests/test-cli.scm
+          - repo: kaappi-json
+            test-files: tests/test-json.scm
+          - repo: kaappi-csv
+            test-files: tests/test-csv.scm
+          - repo: kaappi-toml
+            test-files: tests/test-toml.scm
+          - repo: kaappi-yaml
+            test-files: tests/test-yaml.scm
+          - repo: kaappi-log
+            test-files: tests/test-log.scm
+          - repo: kaappi-template
+            test-files: tests/test-template.scm
+          - repo: kaappi-test
+            test-files: tests/test-framework.scm
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kaappi-binary
+          path: /tmp/kaappi/bin
+
+      - name: Prepare binary
+        run: chmod +x /tmp/kaappi/bin/kaappi
+
+      - name: Clone ${{ matrix.repo }}
+        run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+
+      - name: Run tests
+        run: |
+          KAAPPI=/tmp/kaappi/bin/kaappi
+          for f in ${{ matrix.test-files }}; do
+            echo "::group::${f}"
+            ${KAAPPI} --lib-path repo/lib repo/${f}
+            echo "::endgroup::"
+          done
+
+  # ── Native libraries (need make, no services) ──────────────────────
+  native-libs:
+    needs: build-kaappi
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: kaappi-net
+            test-files: tests/test-net.scm
+          - repo: kaappi-crypto
+            test-files: tests/test-crypto.scm
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kaappi-binary
+          path: /tmp/kaappi/bin
+
+      - name: Prepare binary
+        run: chmod +x /tmp/kaappi/bin/kaappi
+
+      - name: Clone and build ${{ matrix.repo }}
+        run: |
+          git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+          make -C repo
+
+      - name: Run tests
+        run: |
+          KAAPPI=/tmp/kaappi/bin/kaappi
+          for f in ${{ matrix.test-files }}; do
+            echo "::group::${f}"
+            ${KAAPPI} --lib-path repo/lib repo/${f}
+            echo "::endgroup::"
+          done
+        env:
+          DYLD_LIBRARY_PATH: ${{ github.workspace }}/repo
+          LD_LIBRARY_PATH: ${{ github.workspace }}/repo
+
+  # ── Libraries with dependencies (need other kaappi-* repos) ────────
+  dep-libs:
+    needs: build-kaappi
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: kaappi-email
+            dependencies: kaappi-net
+            test-files: tests/test-mime.scm
+          - repo: kaappi-http
+            dependencies: kaappi-net
+            has-native-build: true
+            test-files: tests/test-parse.scm
+          - repo: kaappi-web
+            dependencies: kaappi-net kaappi-http kaappi-json
+            test-files: tests/test-routing.scm tests/test-session.scm
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kaappi-binary
+          path: /tmp/kaappi/bin
+
+      - name: Prepare binary
+        run: chmod +x /tmp/kaappi/bin/kaappi
+
+      - name: Clone ${{ matrix.repo }}
+        run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+
+      - name: Clone and build dependencies
+        run: |
+          for dep in ${{ matrix.dependencies }}; do
+            git clone --depth 1 "https://github.com/kaappi/${dep}.git" "/tmp/${dep}"
+            if [ -f "/tmp/${dep}/Makefile" ]; then
+              make -C "/tmp/${dep}"
+            fi
+          done
+
+      - name: Build native library
+        if: matrix.has-native-build
+        run: make -C repo
+
+      - name: Run tests
+        run: |
+          KAAPPI=/tmp/kaappi/bin/kaappi
+          LIB_FLAGS="--lib-path repo/lib"
+          NATIVE_PATHS=""
+          for dep in ${{ matrix.dependencies }}; do
+            LIB_FLAGS="${LIB_FLAGS} --lib-path /tmp/${dep}/lib"
+            if [ -f "/tmp/${dep}/Makefile" ]; then
+              NATIVE_PATHS="${NATIVE_PATHS:+${NATIVE_PATHS}:}/tmp/${dep}"
+            fi
+          done
+          if [ "${{ matrix.has-native-build }}" = "true" ]; then
+            NATIVE_PATHS="${NATIVE_PATHS:+${NATIVE_PATHS}:}${{ github.workspace }}/repo"
+          fi
+          export DYLD_LIBRARY_PATH="${NATIVE_PATHS}"
+          export LD_LIBRARY_PATH="${NATIVE_PATHS}"
+
+          for f in ${{ matrix.test-files }}; do
+            echo "::group::${f}"
+            ${KAAPPI} ${LIB_FLAGS} repo/${f}
+            echo "::endgroup::"
+          done
+
+  # ── Libraries with service dependencies ─────────────────────────────
+  service-libs:
+    needs: build-kaappi
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: kaappi-redis
+            dependencies: kaappi-net
+            has-native-build: true
+            service: redis
+            test-files: tests/test-resp.scm tests/test-commands.scm
+          - repo: kaappi-pg
+            has-native-build: true
+            service: postgresql
+            test-files: tests/test-types.scm tests/test-dbapi.scm
+          - repo: kaappi-sqlite
+            has-native-build: true
+            test-files: tests/test-types.scm tests/test-dbapi.scm
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kaappi-binary
+          path: /tmp/kaappi/bin
+
+      - name: Prepare binary
+        run: chmod +x /tmp/kaappi/bin/kaappi
+
+      - name: Clone ${{ matrix.repo }}
+        run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+
+      - name: Clone and build dependencies
+        if: matrix.dependencies != ''
+        run: |
+          for dep in ${{ matrix.dependencies }}; do
+            git clone --depth 1 "https://github.com/kaappi/${dep}.git" "/tmp/${dep}"
+            if [ -f "/tmp/${dep}/Makefile" ]; then
+              make -C "/tmp/${dep}"
+            fi
+          done
+
+      - name: Build native library
+        if: matrix.has-native-build
+        run: make -C repo
+
+      - name: Start Redis
+        if: matrix.service == 'redis'
+        run: |
+          brew install redis
+          redis-server --daemonize yes
+
+      - name: Start PostgreSQL
+        if: matrix.service == 'postgresql'
+        run: |
+          brew install postgresql@14
+          brew services start postgresql@14
+          sleep 3
+          /opt/homebrew/opt/postgresql@14/bin/createdb kaappi_test || true
+
+      - name: Run tests
+        run: |
+          KAAPPI=/tmp/kaappi/bin/kaappi
+          LIB_FLAGS="--lib-path repo/lib"
+          NATIVE_PATHS="${{ github.workspace }}/repo"
+          for dep in ${{ matrix.dependencies }}; do
+            LIB_FLAGS="${LIB_FLAGS} --lib-path /tmp/${dep}/lib"
+            if [ -f "/tmp/${dep}/Makefile" ]; then
+              NATIVE_PATHS="${NATIVE_PATHS}:/tmp/${dep}"
+            fi
+          done
+          export DYLD_LIBRARY_PATH="${NATIVE_PATHS}"
+          export LD_LIBRARY_PATH="${NATIVE_PATHS}"
+
+          for f in ${{ matrix.test-files }}; do
+            echo "::group::${f}"
+            ${KAAPPI} ${LIB_FLAGS} repo/${f}
+            echo "::endgroup::"
+          done
+
+  # ── Summary ─────────────────────────────────────────────────────────
+  summary:
+    if: always()
+    needs: [pure-libs, native-libs, dep-libs, service-libs]
+    runs-on: macos-latest
+    steps:
+      - name: Check results
+        run: |
+          echo "## Nightly Ecosystem Results"
+          echo ""
+          echo "| Job | Status |"
+          echo "|-----|--------|"
+          echo "| Pure Scheme libs | ${{ needs.pure-libs.result }} |"
+          echo "| Native libs | ${{ needs.native-libs.result }} |"
+          echo "| Libs with deps | ${{ needs.dep-libs.result }} |"
+          echo "| Libs with services | ${{ needs.service-libs.result }} |"
+          echo ""
+          if [ "${{ needs.pure-libs.result }}" != "success" ] || \
+             [ "${{ needs.native-libs.result }}" != "success" ] || \
+             [ "${{ needs.dep-libs.result }}" != "success" ] || \
+             [ "${{ needs.service-libs.result }}" != "success" ]; then
+            echo "::error::One or more ecosystem packages failed against latest kaappi"
+            exit 1
+          fi
