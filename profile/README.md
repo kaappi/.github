@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://kaappi.github.io/assets/logo.svg" width="140" alt="Kaappi">
+  <img src="https://kaappi-lang.org/assets/logo.svg" width="140" alt="Kaappi">
 </p>
 
 <h3 align="center">Kaappi — R7RS Scheme, brewed in Zig</h3>
@@ -9,18 +9,18 @@
 </p>
 
 <p align="center">
-  <a href="https://kaappi.github.io/guide/">Get Started</a> · <a href="https://kaappi.github.io/procedures/">Procedures</a> · <a href="https://kaappi.github.io/ecosystem/">Ecosystem</a> · <a href="https://kaappi.github.io/">Docs</a>
+  <a href="https://kaappi-lang.org/guide/">Get Started</a> · <a href="https://kaappi-lang.org/procedures/">Procedures</a> · <a href="https://kaappi-lang.org/ecosystem/">Ecosystem</a> · <a href="https://kaappi-lang.org/">Docs</a>
 </p>
 
 ---
 
 ### The runtime
 
-[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~39 000 lines of Zig implementing every identifier from R7RS Appendix A: 600+ built-in procedures, 33 syntax forms, all 14 standard libraries, and 51 SRFIs. Hot functions JIT-compile to native AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and sandbox mode are all built in.
+[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~39 000 lines of Zig implementing every identifier from R7RS Appendix A: 600+ built-in procedures, 33 syntax forms, all 14 standard libraries, and 69 SRFIs. Hot functions JIT-compile to native AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and sandbox mode are all built in.
 
 ### Ecosystem packages
 
-Installable via [**thottam**](https://kaappi.github.io/ecosystem/thottam/), the Kaappi package manager.
+Installable via [**thottam**](https://kaappi-lang.org/ecosystem/thottam/), the Kaappi package manager.
 
 | Package | What it does |
 |---|---|
@@ -55,8 +55,8 @@ Installable via [**thottam**](https://kaappi.github.io/ecosystem/thottam/), the 
 
 ### Links
 
-- [Documentation](https://kaappi.github.io/) — user guide, procedure reference, ecosystem docs
-- [Benchmarks](https://kaappi.github.io/benchmarks/) — fib, tak, triangular against Chez, Gauche, Chibi
-- [Library authoring guide](https://kaappi.github.io/libraries/) — R7RS `define-library`, SRFIs, bytecode caching
+- [Documentation](https://kaappi-lang.org/) — user guide, procedure reference, ecosystem docs
+- [Benchmarks](https://kaappi-lang.org/benchmarks/) — fib, tak, triangular against Chez, Gauche, Chibi
+- [Library authoring guide](https://kaappi-lang.org/libraries/) — R7RS `define-library`, SRFIs, bytecode caching
 
 <p align="center"><sub>MIT License — built with Zig</sub></p>
