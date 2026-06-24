@@ -67,7 +67,7 @@ jobs:
           KAAPPI=/tmp/kaappi/bin/kaappi
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} --lib-path repo/lib repo/${f}
+            ${KAAPPI} --coverage --lib-path repo/lib repo/${f}
             echo "::endgroup::"
           done
 
@@ -103,7 +103,7 @@ jobs:
           KAAPPI=/tmp/kaappi/bin/kaappi
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} --lib-path repo/lib repo/${f}
+            ${KAAPPI} --coverage --lib-path repo/lib repo/${f}
             echo "::endgroup::"
           done
         env:
@@ -173,7 +173,7 @@ jobs:
 
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} ${LIB_FLAGS} repo/${f}
+            ${KAAPPI} --coverage ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
           done
 
@@ -259,7 +259,7 @@ jobs:
 
           for f in ${{ matrix.test-files }}; do
             echo "::group::${f}"
-            ${KAAPPI} ${LIB_FLAGS} repo/${f}
+            ${KAAPPI} --coverage ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
           done
 
