@@ -16,7 +16,7 @@
 
 ### The runtime
 
-[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~39 000 lines of Zig implementing every identifier from R7RS Appendix A: 600+ built-in procedures, 33 syntax forms, all 14 standard libraries, and 69 SRFIs. Hot functions JIT-compile to native AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and sandbox mode are all built in.
+[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~39 000 lines of Zig implementing every identifier from R7RS Appendix A: 554 built-in procedures, 32 syntax forms, all 14 standard libraries, and 72 SRFIs. Hot functions JIT-compile to native AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and sandbox mode are all built in.
 
 ### Ecosystem packages
 
@@ -30,8 +30,12 @@ Installable via [**thottam**](https://kaappi-lang.org/ecosystem/thottam/), the K
 | [kaappi-redis](https://github.com/kaappi/kaappi-redis) | Redis client (RESP2, pipelining, pub/sub) |
 | [kaappi-json](https://github.com/kaappi/kaappi-json) | RFC 8259 JSON parser and serializer |
 | [kaappi-net](https://github.com/kaappi/kaappi-net) | TCP/TLS networking (shared by http, redis, pg) |
+| [kaappi-sqlite](https://github.com/kaappi/kaappi-sqlite) | SQLite bindings (DB-API, parameterized queries) |
+| [kaappi-crypto](https://github.com/kaappi/kaappi-crypto) | Cryptography (OpenSSL — hashing, HMAC, random) |
+| [kaappi-email](https://github.com/kaappi/kaappi-email) | Email (MIME construction, SMTP) |
 | [kaappi-cli](https://github.com/kaappi/kaappi-cli) | CLI framework — arg parsing, subcommands, auto help |
-| [kaappi-examples](https://github.com/kaappi/kaappi-examples) | Example apps: REST API, task queue, CRUD, file server |
+
+Plus [csv](https://github.com/kaappi/kaappi-csv), [json](https://github.com/kaappi/kaappi-json), [yaml](https://github.com/kaappi/kaappi-yaml), [toml](https://github.com/kaappi/kaappi-toml), [log](https://github.com/kaappi/kaappi-log), [template](https://github.com/kaappi/kaappi-template), [test](https://github.com/kaappi/kaappi-test), and [examples](https://github.com/kaappi/kaappi-examples).
 
 ### Quick taste
 
