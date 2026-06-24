@@ -295,10 +295,47 @@ jobs:
           override_repo: kaappi/${{ matrix.repo }}
           fail_ci_if_error: false
 
+  # ── Examples smoke test ───────────────────────────────────────────────
+  examples:
+    needs: build-kaappi
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kaappi-binary
+          path: /tmp/kaappi/bin
+
+      - name: Prepare binary
+        run: chmod +x /tmp/kaappi/bin/kaappi
+
+      - name: Clone repos
+        run: |
+          git clone --depth 1 https://github.com/kaappi/kaappi-examples.git repo
+          git clone --depth 1 https://github.com/kaappi/kaappi-net.git /tmp/kaappi-net
+          cd /tmp/kaappi-net && make
+          git clone --depth 1 https://github.com/kaappi/kaappi-http.git /tmp/kaappi-http
+          git clone --depth 1 https://github.com/kaappi/kaappi-json.git /tmp/kaappi-json
+          git clone --depth 1 https://github.com/kaappi/kaappi-web.git /tmp/kaappi-web
+          git clone --depth 1 https://github.com/kaappi/kaappi-redis.git /tmp/kaappi-redis
+          cd /tmp/kaappi-redis && make
+
+      - name: Smoke test imports
+        run: |
+          /tmp/kaappi/bin/kaappi \
+            --lib-path /tmp/kaappi-net/lib \
+            --lib-path /tmp/kaappi-http/lib \
+            --lib-path /tmp/kaappi-json/lib \
+            --lib-path /tmp/kaappi-web/lib \
+            --lib-path /tmp/kaappi-redis/lib \
+            -e '(import (kaappi web)) (import (kaappi json)) (display "ok") (newline)'
+        env:
+          DYLD_LIBRARY_PATH: /tmp/kaappi-net:/tmp/kaappi-redis
+          LD_LIBRARY_PATH: /tmp/kaappi-net:/tmp/kaappi-redis
+
   # ── Summary ─────────────────────────────────────────────────────────
   summary:
     if: always()
-    needs: [pure-libs, native-libs, dep-libs, service-libs]
+    needs: [pure-libs, native-libs, dep-libs, service-libs, examples]
     runs-on: macos-latest
     steps:
       - name: Check results
@@ -311,11 +348,13 @@ jobs:
           echo "| Native libs | ${{ needs.native-libs.result }} |"
           echo "| Libs with deps | ${{ needs.dep-libs.result }} |"
           echo "| Libs with services | ${{ needs.service-libs.result }} |"
+          echo "| Examples | ${{ needs.examples.result }} |"
           echo ""
           if [ "${{ needs.pure-libs.result }}" != "success" ] || \
              [ "${{ needs.native-libs.result }}" != "success" ] || \
              [ "${{ needs.dep-libs.result }}" != "success" ] || \
-             [ "${{ needs.service-libs.result }}" != "success" ]; then
+             [ "${{ needs.service-libs.result }}" != "success" ] || \
+             [ "${{ needs.examples.result }}" != "success" ]; then
             echo "::error::One or more ecosystem packages failed against latest kaappi"
             exit 1
           fi
