@@ -210,6 +210,14 @@ jobs:
       - name: Clone ${{ matrix.repo }}
         run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
 
+      - name: Install Redis
+        if: matrix.service == 'redis'
+        run: brew install redis
+
+      - name: Install PostgreSQL
+        if: matrix.service == 'postgresql'
+        run: brew install postgresql@14
+
       - name: Clone and build dependencies
         if: matrix.dependencies != ''
         run: |
@@ -226,14 +234,11 @@ jobs:
 
       - name: Start Redis
         if: matrix.service == 'redis'
-        run: |
-          brew install redis
-          redis-server --daemonize yes
+        run: redis-server --daemonize yes
 
       - name: Start PostgreSQL
         if: matrix.service == 'postgresql'
         run: |
-          brew install postgresql@14
           brew services start postgresql@14
           sleep 3
           /opt/homebrew/opt/postgresql@14/bin/createdb kaappi_test || true
