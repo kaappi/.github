@@ -96,6 +96,9 @@ jobs:
             test-files: tests/test-net.scm
           - repo: kaappi-crypto
             test-files: tests/test-crypto.scm
+          - repo: kaappi-math
+            test-files: tests/test-math.scm
+            needs-zig: true
 
     steps:
       - uses: actions/download-artifact@v4
@@ -105,6 +108,12 @@ jobs:
 
       - name: Prepare binary
         run: chmod +x /tmp/kaappi/bin/kaappi
+
+      - name: Setup Zig
+        if: matrix.needs-zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: '0.16.0'
 
       - name: Clone and build ${{ matrix.repo }}
         run: |
