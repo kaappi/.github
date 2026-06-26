@@ -53,6 +53,8 @@ jobs:
             test-files: tests/test-template.scm
           - repo: kaappi-test
             test-files: tests/test-framework.scm
+          - repo: kaappi-bdd
+            test-files: tests/test-bdd.scm
 
     steps:
       - uses: actions/download-artifact@v4
