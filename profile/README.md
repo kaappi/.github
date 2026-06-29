@@ -5,18 +5,18 @@
 <h3 align="center">Kaappi — R7RS Scheme, brewed in Zig</h3>
 
 <p align="center">
-  A complete <strong>R7RS-small</strong> Scheme implementation with a JIT compiler, C FFI, OS threads, and a curated package ecosystem.
+  A complete <strong>R7RS-small</strong> Scheme implementation with an LLVM native compiler, C FFI, OS threads, and a curated package ecosystem.
 </p>
 
 <p align="center">
-  <a href="https://kaappi-lang.org/guide/">Get Started</a> · <a href="https://kaappi-lang.org/procedures/">Procedures</a> · <a href="https://kaappi-lang.org/ecosystem/">Ecosystem</a> · <a href="https://kaappi-lang.org/">Docs</a>
+  <a href="https://kaappi-lang.org/guide/">Get Started</a> · <a href="https://kaappi-lang.org/procedures/">Procedures</a> · <a href="https://kaappi-lang.org/ecosystem/">Ecosystem</a> · <a href="https://kaappi-lang.org/playground/">Playground</a> · <a href="https://kaappi-lang.org/">Docs</a>
 </p>
 
 ---
 
 ### The runtime
 
-[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~39 000 lines of Zig implementing every identifier from R7RS Appendix A: 554 built-in procedures, 32 syntax forms, all 14 standard libraries, and 72 SRFIs. Hot functions JIT-compile to native AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and sandbox mode are all built in.
+[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~52 000 lines of Zig implementing every identifier from R7RS Appendix A: 632 built-in procedures, all 14 standard libraries, and 72 SRFIs. The LLVM native backend compiles Scheme to standalone binaries on AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, sandbox mode, and a built-in [LSP server](https://kaappi-lang.org/guide/editor-support/) are all included.
 
 ### Ecosystem packages
 
@@ -35,7 +35,7 @@ Installable via [**thottam**](https://kaappi-lang.org/ecosystem/thottam/), the K
 | [kaappi-email](https://github.com/kaappi/kaappi-email) | Email (MIME construction, SMTP) |
 | [kaappi-cli](https://github.com/kaappi/kaappi-cli) | CLI framework — arg parsing, subcommands, auto help |
 
-Plus [csv](https://github.com/kaappi/kaappi-csv), [json](https://github.com/kaappi/kaappi-json), [yaml](https://github.com/kaappi/kaappi-yaml), [toml](https://github.com/kaappi/kaappi-toml), [log](https://github.com/kaappi/kaappi-log), [template](https://github.com/kaappi/kaappi-template), [test](https://github.com/kaappi/kaappi-test), and [examples](https://github.com/kaappi/kaappi-examples).
+Plus [csv](https://github.com/kaappi/kaappi-csv), [yaml](https://github.com/kaappi/kaappi-yaml), [toml](https://github.com/kaappi/kaappi-toml), [log](https://github.com/kaappi/kaappi-log), [template](https://github.com/kaappi/kaappi-template), [test](https://github.com/kaappi/kaappi-test), [bdd](https://github.com/kaappi/kaappi-bdd), and [examples](https://github.com/kaappi/kaappi-examples).
 
 ### Quick taste
 
@@ -52,15 +52,15 @@ Plus [csv](https://github.com/kaappi/kaappi-csv), [json](https://github.com/kaap
 
 ### Platforms
 
-| | macOS aarch64 | Linux x86_64 | Linux aarch64 | Linux riscv64 |
-|---|:---:|:---:|:---:|:---:|
-| Build + tests | yes | yes | yes | yes |
-| JIT | AArch64 | x86_64 | AArch64 | — |
+| | macOS aarch64 | Linux x86_64 | Linux aarch64 | Linux riscv64 | WebAssembly |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Build + tests | yes | yes | yes | yes | yes |
+| Native compiler | AArch64 | x86_64 | AArch64 | — | — |
 
 ### Links
 
 - [Documentation](https://kaappi-lang.org/) — user guide, procedure reference, ecosystem docs
-- [Benchmarks](https://kaappi-lang.org/benchmarks/) — fib, tak, triangular against Chez, Gauche, Chibi
-- [Library authoring guide](https://kaappi-lang.org/libraries/) — R7RS `define-library`, SRFIs, bytecode caching
+- [Playground](https://kaappi-lang.org/playground/) — browser REPL powered by `kaappi.wasm`
+- [Tour](https://kaappi-lang.org/tour/) — 12-lesson guided tour with live code
 
 <p align="center"><sub>MIT License — built with Zig</sub></p>
