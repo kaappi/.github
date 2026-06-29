@@ -16,7 +16,7 @@
 
 ### The runtime
 
-[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — ~52 000 lines of Zig implementing every identifier from R7RS Appendix A: 632 built-in procedures, all 14 standard libraries, and 72 SRFIs. The LLVM native backend compiles Scheme to standalone binaries on AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, sandbox mode, and a built-in [LSP server](https://kaappi-lang.org/guide/editor-support/) are all included.
+[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — written in Zig, implementing every identifier from R7RS Appendix A plus all 14 standard libraries and a broad set of SRFIs. The LLVM native backend compiles Scheme to standalone binaries on AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, sandbox mode, and a built-in [LSP server](https://kaappi-lang.org/guide/editor-support/) are all included.
 
 ### Ecosystem packages
 
