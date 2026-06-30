@@ -8,6 +8,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  issues: write
 
 jobs:
   build-kaappi:
@@ -357,23 +358,91 @@ jobs:
     needs: [pure-libs, native-libs, dep-libs, service-libs, examples]
     runs-on: macos-latest
     steps:
-      - name: Check results
+      - name: Build summary
+        id: summary
         run: |
-          echo "## Nightly Ecosystem Results"
-          echo ""
-          echo "| Job | Status |"
-          echo "|-----|--------|"
-          echo "| Pure Scheme libs | ${{ needs.pure-libs.result }} |"
-          echo "| Native libs | ${{ needs.native-libs.result }} |"
-          echo "| Libs with deps | ${{ needs.dep-libs.result }} |"
-          echo "| Libs with services | ${{ needs.service-libs.result }} |"
-          echo "| Examples | ${{ needs.examples.result }} |"
-          echo ""
-          if [ "${{ needs.pure-libs.result }}" != "success" ] || \
-             [ "${{ needs.native-libs.result }}" != "success" ] || \
-             [ "${{ needs.dep-libs.result }}" != "success" ] || \
-             [ "${{ needs.service-libs.result }}" != "success" ] || \
-             [ "${{ needs.examples.result }}" != "success" ]; then
-            echo "::error::One or more ecosystem packages failed against latest kaappi"
-            exit 1
+          DATE=$(date -u +%Y-%m-%d)
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          {
+            echo "## Nightly Ecosystem Results — ${DATE}"
+            echo ""
+            echo "| Job | Status |"
+            echo "|-----|--------|"
+            echo "| Pure Scheme libs | ${{ needs.pure-libs.result }} |"
+            echo "| Native libs | ${{ needs.native-libs.result }} |"
+            echo "| Libs with deps | ${{ needs.dep-libs.result }} |"
+            echo "| Libs with services | ${{ needs.service-libs.result }} |"
+            echo "| Examples | ${{ needs.examples.result }} |"
+            echo ""
+            echo "[View run](${RUN_URL})"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          FAILED=false
+          for result in \
+            "${{ needs.pure-libs.result }}" \
+            "${{ needs.native-libs.result }}" \
+            "${{ needs.dep-libs.result }}" \
+            "${{ needs.service-libs.result }}" \
+            "${{ needs.examples.result }}"; do
+            [ "$result" != "success" ] && FAILED=true
+          done
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+      - name: Triage failure
+        if: steps.summary.outputs.failed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPO="${{ github.repository }}"
+          RUN_URL="https://github.com/${REPO}/actions/runs/${{ github.run_id }}"
+          DATE=$(date -u +%Y-%m-%d)
+
+          BODY=$(cat <<EOF
+          Nightly ecosystem tests failed on ${DATE}.
+
+          | Job | Status |
+          |-----|--------|
+          | Pure Scheme libs | ${{ needs.pure-libs.result }} |
+          | Native libs | ${{ needs.native-libs.result }} |
+          | Libs with deps | ${{ needs.dep-libs.result }} |
+          | Libs with services | ${{ needs.service-libs.result }} |
+          | Examples | ${{ needs.examples.result }} |
+
+          [View workflow run](${RUN_URL})
+          EOF
+          )
+
+          gh label create nightly-failure --color D93F0B \
+            --description "Nightly ecosystem test failure" \
+            --repo "$REPO" --force 2>/dev/null || true
+
+          EXISTING=$(gh issue list --repo "$REPO" --label nightly-failure \
+            --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$EXISTING" ]; then
+            echo "$BODY" | gh issue comment "$EXISTING" --repo "$REPO" --body-file -
+          else
+            echo "$BODY" | gh issue create --repo "$REPO" \
+              --title "Nightly ecosystem failure — ${DATE}" \
+              --label nightly-failure --body-file -
           fi
+
+      - name: Close resolved issue
+        if: steps.summary.outputs.failed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPO="${{ github.repository }}"
+          EXISTING=$(gh issue list --repo "$REPO" --label nightly-failure \
+            --state open --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue close "$EXISTING" --repo "$REPO" \
+              --comment "Nightly run passed on $(date -u +%Y-%m-%d). Closing. [View run](https://github.com/${REPO}/actions/runs/${{ github.run_id }})"
+          fi
+
+      - name: Fail if any group failed
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "::error::One or more ecosystem packages failed against latest kaappi"
+          exit 1
