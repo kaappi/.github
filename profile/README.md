@@ -35,7 +35,7 @@ Installable via [**thottam**](https://kaappi-lang.org/ecosystem/thottam/), the K
 | [kaappi-email](https://github.com/kaappi/kaappi-email) | Email (MIME construction, SMTP) |
 | [kaappi-cli](https://github.com/kaappi/kaappi-cli) | CLI framework — arg parsing, subcommands, auto help |
 
-Plus [csv](https://github.com/kaappi/kaappi-csv), [yaml](https://github.com/kaappi/kaappi-yaml), [toml](https://github.com/kaappi/kaappi-toml), [log](https://github.com/kaappi/kaappi-log), [template](https://github.com/kaappi/kaappi-template), [test](https://github.com/kaappi/kaappi-test), [bdd](https://github.com/kaappi/kaappi-bdd), and [examples](https://github.com/kaappi/kaappi-examples).
+Plus [csv](https://github.com/kaappi/kaappi-csv), [yaml](https://github.com/kaappi/kaappi-yaml), [toml](https://github.com/kaappi/kaappi-toml), [log](https://github.com/kaappi/kaappi-log), [template](https://github.com/kaappi/kaappi-template), [test](https://github.com/kaappi/kaappi-test), and [bdd](https://github.com/kaappi/kaappi-bdd).
 
 ### Quick taste
 
@@ -48,6 +48,27 @@ Plus [csv](https://github.com/kaappi/kaappi-csv), [yaml](https://github.com/kaap
          (fib (- n 2)))))
 
 (display (fib 30))  ;=> 832040
+```
+
+### Learn by example
+
+[**kaappi-examples**](https://github.com/kaappi/kaappi-examples) — 12 runnable programs from beginner to advanced. Pure Scheme examples need zero setup beyond the `kaappi` binary.
+
+| Example | What it does | Difficulty |
+|---|---|:---:|
+| [Sorting Algorithms](https://github.com/kaappi/kaappi-examples/tree/main/sorting) | Functional quicksort & merge sort with higher-order abstractions | Beginner |
+| [Game of Life](https://github.com/kaappi/kaappi-examples/tree/main/game-of-life) | Conway's automaton — functional grid updates, ANSI animation | Beginner |
+| [Maze Solver](https://github.com/kaappi/kaappi-examples/tree/main/maze-solver) | DFS generation & solving with immutable state | Intermediate |
+| [Huffman Coding](https://github.com/kaappi/kaappi-examples/tree/main/huffman-coding) | Compression with binary trees and prefix codes | Intermediate |
+| [Symbolic Differentiation](https://github.com/kaappi/kaappi-examples/tree/main/symbolic-differentiation) | Symbolic calculus with AST walking and algebraic simplification | Advanced |
+| [Metacircular Evaluator](https://github.com/kaappi/kaappi-examples/tree/main/metacircular-evaluator) | Scheme interpreting Scheme — the classic eval/apply loop | Advanced |
+| [Lazy Evaluator](https://github.com/kaappi/kaappi-examples/tree/main/env-evaluator) | Normal-order evaluation with memoizing thunks | Advanced |
+| [REST API](https://github.com/kaappi/kaappi-examples/tree/main/rest-api) | Full web server with PostgreSQL, Redis caching, JSON | Advanced |
+
+```bash
+git clone https://github.com/kaappi/kaappi-examples.git
+kaappi kaappi-examples/game-of-life/app.scm demo
+kaappi kaappi-examples/metacircular-evaluator/app.scm demo
 ```
 
 ### Platforms
