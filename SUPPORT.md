@@ -2,10 +2,11 @@
 
 ## Getting help
 
-- **Documentation**: [kaappi.github.io](https://kaappi.github.io/) — user guide,
+- **Documentation**: [kaappi-lang.org](https://kaappi-lang.org/) — user guide,
   procedure reference, ecosystem docs.
-- **Bug reports**: open an issue on the affected repository using the bug report
-  template.
-- **Feature requests**: open an issue on the affected repository.
-- **Questions**: open an issue with the question label on
-  [kaappi/kaappi](https://github.com/kaappi/kaappi).
+- **Questions and discussion**:
+  [GitHub Discussions](https://github.com/orgs/kaappi/discussions) — the primary
+  community channel for questions, ideas, and bug reports.
+- **Bug reports**: post in Discussions, or open an issue if you're a member
+  of the [kaappi org](https://github.com/kaappi).
+- **Feature requests**: propose in Discussions first to gather feedback.

@@ -78,10 +78,18 @@ kaappi kaappi-examples/metacircular-evaluator/app.scm demo
 | Build + tests | yes | yes | yes | yes | yes |
 | Native compiler | AArch64 | x86_64 | AArch64 | — | — |
 
+### Get involved
+
+**[GitHub Discussions](https://github.com/orgs/kaappi/discussions)** — ask
+questions, report bugs, propose features, or say hello. Issues and PRs are
+open to org members; ask for an invite in Discussions when you're ready to
+contribute.
+
 ### Links
 
 - [Documentation](https://kaappi-lang.org/) — user guide, procedure reference, ecosystem docs
 - [Playground](https://kaappi-lang.org/playground/) — browser REPL powered by `kaappi.wasm`
 - [Tour](https://kaappi-lang.org/tour/) — 12-lesson guided tour with live code
+- [Community](https://kaappi-lang.org/community/) — how to participate
 
 <p align="center"><sub>MIT License — built with Zig</sub></p>

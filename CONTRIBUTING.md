@@ -3,11 +3,24 @@
 Thanks for your interest in contributing! All kaappi repositories are MIT
 licensed and contributions are welcome.
 
+## Start with Discussions
+
+**[GitHub Discussions](https://github.com/orgs/kaappi/discussions)** is the
+entry point for new contributors. Use it to ask questions, report bugs,
+propose features, or introduce yourself.
+
+Issues and pull requests across all kaappi repos are restricted to members of
+the [kaappi GitHub org](https://github.com/kaappi). If you'd like to
+contribute directly, ask for an invite in Discussions — we're happy to add
+anyone who's genuinely interested.
+
 ## Getting started
 
-1. Fork the repository and clone it locally.
-2. Follow the **README** in the specific repo for build and test instructions.
-3. For the core interpreter, see the
+1. Introduce yourself or start a conversation in
+   [Discussions](https://github.com/orgs/kaappi/discussions).
+2. Once you have org access, fork the repository and clone it locally.
+3. Follow the **README** in the specific repo for build and test instructions.
+4. For the core interpreter, see the
    [kaappi/kaappi CONTRIBUTING guide](https://github.com/kaappi/kaappi/blob/main/CONTRIBUTING.md)
    for Zig-specific setup.
 
@@ -27,11 +40,11 @@ licensed and contributions are welcome.
 
 ## Reporting bugs
 
-Open an issue in the affected repository using the bug report template. Include
-the Kaappi version (`kaappi --version`), your platform, and a minimal
-reproduction.
+Post in [Discussions](https://github.com/orgs/kaappi/discussions) with the
+Kaappi version (`kaappi --version`), your platform, and a minimal
+reproduction. Org members can also open issues directly.
 
 ## Questions
 
-Open a GitHub issue with the question label, or start a discussion on the
-[kaappi/kaappi](https://github.com/kaappi/kaappi) repository.
+Start a thread in
+[GitHub Discussions](https://github.com/orgs/kaappi/discussions).
