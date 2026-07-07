@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="https://kaappi-lang.org/assets/logo.svg" width="140" alt="Kaappi">
-</p>
-
-<h3 align="center">Kaappi — R7RS Scheme, brewed in Zig</h3>
+<h2 align="center">Kaappi — R7RS Scheme, brewed in Zig</h2>
 
 <p align="center">
   A complete <strong>R7RS-small</strong> Scheme implementation with an LLVM native compiler, C FFI, OS threads, and a curated package ecosystem.
