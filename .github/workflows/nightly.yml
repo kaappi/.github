@@ -5,16 +5,16 @@ on:
     - cron: '17 5 * * *'   # 05:17 UTC daily
   workflow_dispatch:        # manual trigger
 
+# Least-privilege default. Jobs that need more scope it at the job
+# level: id-token for Codecov OIDC, issues for the summary triage.
 permissions:
-  id-token: write
   contents: read
-  issues: write
 
 jobs:
   build-kaappi:
     runs-on: macos-latest
     steps:
-      - uses: mlugg/setup-zig@v2
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
         with:
           version: '0.16.0'
 
@@ -24,7 +24,7 @@ jobs:
           cd /tmp/kaappi && zig build
 
       - name: Upload binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: kaappi-binary
           path: /tmp/kaappi/zig-out/bin/kaappi
@@ -34,6 +34,8 @@ jobs:
   pure-libs:
     needs: build-kaappi
     runs-on: macos-latest
+    permissions:
+      id-token: write # Codecov OIDC upload
     strategy:
       fail-fast: false
       matrix:
@@ -58,7 +60,7 @@ jobs:
             test-files: tests/test-bdd.scm
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -79,7 +81,7 @@ jobs:
           done
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
         with:
           use_oidc: true
           files: coverage.xml
@@ -91,6 +93,8 @@ jobs:
   native-libs:
     needs: build-kaappi
     runs-on: macos-latest
+    permissions:
+      id-token: write # Codecov OIDC upload
     strategy:
       fail-fast: false
       matrix:
@@ -104,7 +108,7 @@ jobs:
             needs-zig: true
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -114,7 +118,7 @@ jobs:
 
       - name: Setup Zig
         if: matrix.needs-zig
-        uses: mlugg/setup-zig@v2
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
         with:
           version: '0.16.0'
 
@@ -136,7 +140,7 @@ jobs:
           LD_LIBRARY_PATH: ${{ github.workspace }}/repo
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
         with:
           use_oidc: true
           files: coverage.xml
@@ -148,6 +152,8 @@ jobs:
   dep-libs:
     needs: build-kaappi
     runs-on: macos-latest
+    permissions:
+      id-token: write # Codecov OIDC upload
     strategy:
       fail-fast: false
       matrix:
@@ -164,7 +170,7 @@ jobs:
             test-files: tests/test-routing.scm tests/test-session.scm
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -212,7 +218,7 @@ jobs:
           done
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
         with:
           use_oidc: true
           files: coverage.xml
@@ -224,6 +230,8 @@ jobs:
   service-libs:
     needs: build-kaappi
     runs-on: macos-latest
+    permissions:
+      id-token: write # Codecov OIDC upload
     strategy:
       fail-fast: false
       matrix:
@@ -242,7 +250,7 @@ jobs:
             test-files: tests/test-types.scm tests/test-dbapi.scm
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -307,7 +315,7 @@ jobs:
           done
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
         with:
           use_oidc: true
           files: coverage.xml
@@ -320,7 +328,7 @@ jobs:
     needs: build-kaappi
     runs-on: macos-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -357,6 +365,8 @@ jobs:
     if: always()
     needs: [pure-libs, native-libs, dep-libs, service-libs, examples]
     runs-on: macos-latest
+    permissions:
+      issues: write # create/comment/close nightly-failure issues
     steps:
       - name: Build summary
         id: summary

@@ -28,14 +28,21 @@ on:
         default: ''
         description: 'Service to start: redis or postgresql'
 
+# Read-only: the job only checks out the calling repo and runs its
+# tests; nothing writes to the repository.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
-      - uses: mlugg/setup-zig@v2
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
         with:
           version: ${{ inputs.zig-version }}
 
