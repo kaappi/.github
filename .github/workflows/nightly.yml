@@ -348,14 +348,21 @@ jobs:
           cd /tmp/kaappi-redis && make
 
       - name: Smoke test imports
+        # kaappi has no -e/--eval flag; run the expressions from a file.
         run: |
+          cat > /tmp/smoke.scm <<'EOF'
+          (import (kaappi web))
+          (import (kaappi json))
+          (display "ok")
+          (newline)
+          EOF
           /tmp/kaappi/bin/kaappi \
             --lib-path /tmp/kaappi-net/lib \
             --lib-path /tmp/kaappi-http/lib \
             --lib-path /tmp/kaappi-json/lib \
             --lib-path /tmp/kaappi-web/lib \
             --lib-path /tmp/kaappi-redis/lib \
-            -e '(import (kaappi web)) (import (kaappi json)) (display "ok") (newline)'
+            /tmp/smoke.scm
         env:
           DYLD_LIBRARY_PATH: /tmp/kaappi-net:/tmp/kaappi-redis
           LD_LIBRARY_PATH: /tmp/kaappi-net:/tmp/kaappi-redis
