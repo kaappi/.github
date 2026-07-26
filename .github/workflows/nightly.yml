@@ -91,6 +91,10 @@ jobs:
         run: |
           KAAPPI=/tmp/kaappi/bin/kaappi
           for f in ${{ matrix.test-files }}; do
+            if [ ! -f "repo/${f}" ]; then
+              echo "::error::${{ matrix.repo }} lists ${f} in test-files but the file does not exist"
+              exit 1
+            fi
             echo "::group::${f}"
             ${KAAPPI} --coverage --coverage-xml coverage.xml --lib-path repo/lib repo/${f}
             echo "::endgroup::"
@@ -149,6 +153,10 @@ jobs:
         run: |
           KAAPPI=/tmp/kaappi/bin/kaappi
           for f in ${{ matrix.test-files }}; do
+            if [ ! -f "repo/${f}" ]; then
+              echo "::error::${{ matrix.repo }} lists ${f} in test-files but the file does not exist"
+              exit 1
+            fi
             echo "::group::${f}"
             ${KAAPPI} --coverage --coverage-xml coverage.xml --lib-path repo/lib repo/${f}
             echo "::endgroup::"
@@ -230,6 +238,10 @@ jobs:
           export LD_LIBRARY_PATH="${NATIVE_PATHS}"
 
           for f in ${{ matrix.test-files }}; do
+            if [ ! -f "repo/${f}" ]; then
+              echo "::error::${{ matrix.repo }} lists ${f} in test-files but the file does not exist"
+              exit 1
+            fi
             echo "::group::${f}"
             ${KAAPPI} --coverage --coverage-xml coverage.xml ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
@@ -262,7 +274,7 @@ jobs:
           - repo: kaappi-pg
             has-native-build: true
             service: postgresql
-            test-files: tests/test-types.scm tests/test-dbapi.scm
+            test-files: tests/test-types.scm tests/test-dbapi.scm tests/test-pg.scm
           - repo: kaappi-sqlite
             has-native-build: true
             test-files: tests/test-types.scm tests/test-dbapi.scm
@@ -327,6 +339,10 @@ jobs:
           export LD_LIBRARY_PATH="${NATIVE_PATHS}"
 
           for f in ${{ matrix.test-files }}; do
+            if [ ! -f "repo/${f}" ]; then
+              echo "::error::${{ matrix.repo }} lists ${f} in test-files but the file does not exist"
+              exit 1
+            fi
             echo "::group::${f}"
             ${KAAPPI} --coverage --coverage-xml coverage.xml ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
