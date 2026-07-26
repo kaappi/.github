@@ -244,7 +244,7 @@ jobs:
           - repo: kaappi-pg
             has-native-build: true
             service: postgresql
-            test-files: tests/test-types.scm tests/test-dbapi.scm
+            test-files: tests/test-types.scm tests/test-dbapi.scm tests/test-pg.scm
           - repo: kaappi-sqlite
             has-native-build: true
             test-files: tests/test-types.scm tests/test-dbapi.scm
