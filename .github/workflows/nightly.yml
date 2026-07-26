@@ -24,7 +24,7 @@ jobs:
           cd /tmp/kaappi && zig build
 
       - name: Upload binary
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: kaappi-binary
           path: /tmp/kaappi/zig-out/bin/kaappi
@@ -33,7 +33,7 @@ jobs:
       - name: Upload portable libs
         # The lib/ tree (srfi/chibi/kaappi portable libraries) from the same
         # main checkout, for libs that import portable SRFIs via KAAPPI_HOME.
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: kaappi-lib
           path: /tmp/kaappi/lib
@@ -71,12 +71,12 @@ jobs:
             test-files: tests/test-mpl.scm
 
     steps:
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
 
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: kaappi-lib
           path: /tmp/kaappi-home/lib
@@ -103,7 +103,7 @@ jobs:
           KAAPPI_HOME: /tmp/kaappi-home
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           use_oidc: true
           files: coverage.xml
@@ -130,7 +130,7 @@ jobs:
             needs-zig: true
 
     steps:
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -166,7 +166,7 @@ jobs:
           LD_LIBRARY_PATH: ${{ github.workspace }}/repo
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           use_oidc: true
           files: coverage.xml
@@ -196,7 +196,7 @@ jobs:
             test-files: tests/test-routing.scm tests/test-session.scm
 
     steps:
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -248,7 +248,7 @@ jobs:
           done
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           use_oidc: true
           files: coverage.xml
@@ -280,7 +280,7 @@ jobs:
             test-files: tests/test-types.scm tests/test-dbapi.scm
 
     steps:
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
@@ -349,7 +349,7 @@ jobs:
           done
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           use_oidc: true
           files: coverage.xml
@@ -362,7 +362,7 @@ jobs:
     needs: build-kaappi
     runs-on: macos-latest
     steps:
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
