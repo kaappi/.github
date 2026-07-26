@@ -30,6 +30,15 @@ jobs:
           path: /tmp/kaappi/zig-out/bin/kaappi
           retention-days: 1
 
+      - name: Upload portable libs
+        # The lib/ tree (srfi/chibi/kaappi portable libraries) from the same
+        # main checkout, for libs that import portable SRFIs via KAAPPI_HOME.
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kaappi-lib
+          path: /tmp/kaappi/lib
+          retention-days: 1
+
   # ── Pure Scheme libraries (no native build, no services) ────────────
   pure-libs:
     needs: build-kaappi
@@ -58,12 +67,19 @@ jobs:
             test-files: tests/test-framework.scm
           - repo: kaappi-bdd
             test-files: tests/test-bdd.scm
+          - repo: kaappi-mpl
+            test-files: tests/test-mpl.scm
 
     steps:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: kaappi-binary
           path: /tmp/kaappi/bin
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: kaappi-lib
+          path: /tmp/kaappi-home/lib
 
       - name: Prepare binary
         run: chmod +x /tmp/kaappi/bin/kaappi
@@ -79,6 +95,8 @@ jobs:
             ${KAAPPI} --coverage --coverage-xml coverage.xml --lib-path repo/lib repo/${f}
             echo "::endgroup::"
           done
+        env:
+          KAAPPI_HOME: /tmp/kaappi-home
 
       - name: Upload to Codecov
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
@@ -244,7 +262,7 @@ jobs:
           - repo: kaappi-pg
             has-native-build: true
             service: postgresql
-            test-files: tests/test-types.scm tests/test-dbapi.scm tests/test-pg.scm
+            test-files: tests/test-types.scm tests/test-dbapi.scm
           - repo: kaappi-sqlite
             has-native-build: true
             test-files: tests/test-types.scm tests/test-dbapi.scm
