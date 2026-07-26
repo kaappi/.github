@@ -160,7 +160,7 @@ jobs:
         include:
           - repo: kaappi-email
             dependencies: kaappi-net
-            test-files: tests/test-mime.scm
+            test-files: tests/test-email.scm tests/test-mime.scm
           - repo: kaappi-http
             dependencies: kaappi-net
             has-native-build: true
