@@ -85,7 +85,9 @@ jobs:
         run: chmod +x /tmp/kaappi/bin/kaappi
 
       - name: Clone ${{ matrix.repo }}
-        run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+        run: |
+          git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+          echo "REPO_SHA=$(git -C repo rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Run tests
         run: |
@@ -108,7 +110,13 @@ jobs:
           use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
-          override_repo: kaappi/${{ matrix.repo }}
+          # Attribute the upload to the ecosystem repo at its real HEAD --
+          # this workflow runs in kaappi/.github, whose slug/SHA would be
+          # (and long was) recorded otherwise. override_repo never existed;
+          # slug is the codecov-action input for this.
+          slug: kaappi/${{ matrix.repo }}
+          override_commit: ${{ env.REPO_SHA }}
+          override_branch: main
           fail_ci_if_error: false
 
   # ── Native libraries (need make, no services) ──────────────────────
@@ -147,6 +155,7 @@ jobs:
       - name: Clone and build ${{ matrix.repo }}
         run: |
           git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+          echo "REPO_SHA=$(git -C repo rev-parse HEAD)" >> "$GITHUB_ENV"
           make -C repo
 
       - name: Run tests
@@ -171,7 +180,13 @@ jobs:
           use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
-          override_repo: kaappi/${{ matrix.repo }}
+          # Attribute the upload to the ecosystem repo at its real HEAD --
+          # this workflow runs in kaappi/.github, whose slug/SHA would be
+          # (and long was) recorded otherwise. override_repo never existed;
+          # slug is the codecov-action input for this.
+          slug: kaappi/${{ matrix.repo }}
+          override_commit: ${{ env.REPO_SHA }}
+          override_branch: main
           fail_ci_if_error: false
 
   # ── Libraries with dependencies (need other kaappi-* repos) ────────
@@ -206,7 +221,9 @@ jobs:
         run: chmod +x /tmp/kaappi/bin/kaappi
 
       - name: Clone ${{ matrix.repo }}
-        run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+        run: |
+          git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+          echo "REPO_SHA=$(git -C repo rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Clone and build dependencies
         run: |
@@ -269,7 +286,13 @@ jobs:
           use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
-          override_repo: kaappi/${{ matrix.repo }}
+          # Attribute the upload to the ecosystem repo at its real HEAD --
+          # this workflow runs in kaappi/.github, whose slug/SHA would be
+          # (and long was) recorded otherwise. override_repo never existed;
+          # slug is the codecov-action input for this.
+          slug: kaappi/${{ matrix.repo }}
+          override_commit: ${{ env.REPO_SHA }}
+          override_branch: main
           fail_ci_if_error: false
 
   # ── Libraries with service dependencies ─────────────────────────────
@@ -305,7 +328,9 @@ jobs:
         run: chmod +x /tmp/kaappi/bin/kaappi
 
       - name: Clone ${{ matrix.repo }}
-        run: git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+        run: |
+          git clone --depth 1 https://github.com/kaappi/${{ matrix.repo }}.git repo
+          echo "REPO_SHA=$(git -C repo rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Install Redis
         if: matrix.service == 'redis'
@@ -370,7 +395,13 @@ jobs:
           use_oidc: true
           files: coverage.xml
           flags: ${{ matrix.repo }}
-          override_repo: kaappi/${{ matrix.repo }}
+          # Attribute the upload to the ecosystem repo at its real HEAD --
+          # this workflow runs in kaappi/.github, whose slug/SHA would be
+          # (and long was) recorded otherwise. override_repo never existed;
+          # slug is the codecov-action input for this.
+          slug: kaappi/${{ matrix.repo }}
+          override_commit: ${{ env.REPO_SHA }}
+          override_branch: main
           fail_ci_if_error: false
 
   # ── Examples smoke test ───────────────────────────────────────────────
