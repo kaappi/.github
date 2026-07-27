@@ -187,6 +187,7 @@ jobs:
           - repo: kaappi-email
             dependencies: kaappi-net
             test-files: tests/test-email.scm tests/test-mime.scm
+            smtp-roundtrip: true
           - repo: kaappi-http
             dependencies: kaappi-net
             has-native-build: true
@@ -246,6 +247,21 @@ jobs:
             ${KAAPPI} --coverage --coverage-xml coverage.xml ${LIB_FLAGS} repo/${f}
             echo "::endgroup::"
           done
+
+      # kaappi-email's transport regression drives a real localhost SMTP
+      # sink (the arity bug it guards against was invisible to any test
+      # that never moved bytes — kaappi-email#3). The driver starts the
+      # sink, runs the Scheme client, and asserts on the captured message.
+      - name: Run SMTP round-trip test
+        if: matrix.smtp-roundtrip
+        timeout-minutes: 3
+        run: bash repo/tests/test-smtp-roundtrip.sh
+        env:
+          KAAPPI: /tmp/kaappi/bin/kaappi
+          LIB_PATH: repo/lib
+          NET_LIB: /tmp/kaappi-net/lib
+          DYLD_LIBRARY_PATH: /tmp/kaappi-net
+          LD_LIBRARY_PATH: /tmp/kaappi-net
 
       - name: Upload to Codecov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
