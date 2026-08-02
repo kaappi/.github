@@ -12,7 +12,7 @@
 
 ### The runtime
 
-[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — written in Zig, implementing every identifier from R7RS Appendix A plus all 14 standard libraries and a broad set of SRFIs. The LLVM native backend compiles Scheme to standalone binaries on AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and a sandbox mode are all included.
+[**kaappi/kaappi**](https://github.com/kaappi/kaappi) is the core interpreter — written in Zig, implementing every identifier from R7RS [Appendix A](https://standards.scheme.org/corrected-r7rs/r7rs-Z-H-10.html) plus all 14 standard libraries and a broad set of SRFIs. The LLVM native backend compiles Scheme to standalone binaries on AArch64/x86_64. First-class `call/cc`, hygienic macros, green fibers, OS threads, a stepping debugger, a profiler, and a sandbox mode are all included.
 
 ### Ecosystem packages
 
