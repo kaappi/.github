@@ -1,22 +1,12 @@
 # Security Policy
 
-## Reporting a vulnerability
+This is the org-wide default security policy, used for any
+[kaappi](https://github.com/kaappi) repository that doesn't have its own
+`SECURITY.md`. It is maintained at
+[kaappi/community/SECURITY.md](https://github.com/kaappi/community/blob/main/SECURITY.md),
+the canonical copy — see that file for the reporting process and supported
+versions.
 
-If you discover a security vulnerability in any kaappi repository, please report
-it through GitHub's
-[private security advisory](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability)
-feature on the affected repository.
-
-Please do **not** open a public issue for security vulnerabilities.
-
-## Scope
-
-This policy applies to all repositories in the
-[kaappi](https://github.com/kaappi) organization, including the core
-interpreter, ecosystem libraries, and tooling.
-
-## Sandbox mode
-
-The core interpreter provides a `--sandbox` flag that disables FFI, file I/O,
-`eval`, `load`, and environment variable access. If you are running untrusted
-Scheme code, use sandbox mode.
+A repo with its own threat model documents it in its own `SECURITY.md`; for
+example, [kaappi/kaappi](https://github.com/kaappi/kaappi/blob/main/SECURITY.md)
+covers its sandbox mode and FFI trust boundary.
