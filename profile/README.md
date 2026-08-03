@@ -79,13 +79,14 @@ kaappi kaappi-examples/metacircular-evaluator/app.scm demo
 **[GitHub Discussions](https://github.com/orgs/kaappi/discussions)** — ask
 questions, report bugs, propose features, or say hello. Issues and PRs are
 open to org members; ask for an invite in Discussions when you're ready to
-contribute.
+contribute. See [**kaappi/community**](https://github.com/kaappi/community)
+for the full contributor guide, governance, and security policy.
 
 ### Links
 
 - [Documentation](https://kaappi-lang.org/) — user guide, procedure reference, ecosystem docs
 - [Playground](https://kaappi-lang.org/playground/) — browser REPL powered by `kaappi.wasm`
 - [Tour](https://kaappi-lang.org/tour/) — 12-lesson guided tour with live code
-- [Community](https://kaappi-lang.org/community/) — how to participate
+- [Community](https://github.com/kaappi/community) — contributing, governance, code of conduct, security
 
 <p align="center"><sub>MIT License — built with Zig</sub></p>
