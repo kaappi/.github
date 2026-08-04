@@ -10,3 +10,8 @@
 - **Bug reports**: post in Discussions, or open an issue if you're a member
   of the [kaappi org](https://github.com/kaappi).
 - **Feature requests**: propose in Discussions first to gather feedback.
+
+## Financially support the project
+
+If Kaappi has been useful to you, consider buying me a coffee:
+https://www.buymeacoffee.com/baiju

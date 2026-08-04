@@ -87,5 +87,6 @@ contribute.
 - [Playground](https://kaappi-lang.org/playground/) — browser REPL powered by `kaappi.wasm`
 - [Tour](https://kaappi-lang.org/tour/) — 12-lesson guided tour with live code
 - [Community](https://kaappi-lang.org/community/) — how to participate
+- [Buy Me a Coffee](https://www.buymeacoffee.com/baiju) — support the project financially
 
 <p align="center"><sub>MIT License — built with Zig</sub></p>
