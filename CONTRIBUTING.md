@@ -3,8 +3,9 @@
 Thanks for your interest in contributing! All kaappi repositories are MIT
 licensed and contributions are welcome.
 
-The full contributor guide — communication channels, how org access works,
-and the typical path for a new contributor — is maintained at
+The full contributor guide — communication channels, what a PR needs
+before it merges, and the typical path for a new contributor — is
+maintained at
 [kaappi/community](https://github.com/kaappi/community/blob/main/CONTRIBUTING.md).
 
 For a specific repo's build/test/PR workflow, see that repo's own
