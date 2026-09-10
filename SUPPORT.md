@@ -7,8 +7,9 @@
 - **Questions and discussion**:
   [GitHub Discussions](https://github.com/orgs/kaappi/discussions) — the primary
   community channel for questions, ideas, and bug reports.
-- **Bug reports**: post in Discussions, or open an issue if you're a member
-  of the [kaappi org](https://github.com/kaappi).
+- **Bug reports**: open an issue on the affected repo (the issue form asks
+  for the version, platform, and a reproduction). Not sure it's a bug? Ask
+  in Discussions first.
 - **Feature requests**: propose in Discussions first to gather feedback.
 
 ## Financially support the project

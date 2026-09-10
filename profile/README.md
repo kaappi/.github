@@ -77,9 +77,8 @@ kaappi kaappi-examples/metacircular-evaluator/app.scm demo
 ### Get involved
 
 **[GitHub Discussions](https://github.com/orgs/kaappi/discussions)** — ask
-questions, report bugs, propose features, or say hello. Issues and PRs are
-open to org members; ask for an invite in Discussions when you're ready to
-contribute.
+questions, propose features, or say hello. Issues and pull requests on
+every repo are open to everyone; no org membership is needed.
 
 ### Links
 
